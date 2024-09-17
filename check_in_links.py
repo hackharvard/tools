@@ -1,5 +1,5 @@
 from helpers import get_uids, get_applicant_hhid, get_accepted_applications
-
+import json;
 """
 Associates a uid with a link to check-in
 """
@@ -27,4 +27,6 @@ def generate_checkin_links():
 
 if __name__ == "__main__":
     checkin_links = generate_checkin_links()
-    print(checkin_links)
+    # print(checkin_links)
+    with open('./check_in_links.json', 'w') as f:
+        json.dump(checkin_links, f)

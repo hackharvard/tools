@@ -1,4 +1,4 @@
-Run ```pip install firebase-admin python-dotenv csv``` first.
+Run ```pip install firebase-admin python-dotenv qrcode postmark csv``` first.
 
 If you want to export all resumes to a csv file, run
 
