@@ -1,18 +1,18 @@
-from helpers import get_application_ids, get_applicant_hhid, CONFIRMATIONS_COLLECTION
+from helpers import get_uids, get_applicant_hhid, CONFIRMATIONS_COLLECTION
 
 """
-Associates an application id with a link to check-in
+Associates a uid with a link to check-in
 """
 
 def generate_checkin_links():
     """
     Generate check-in-links for all application ids
     """
-    application_ids = get_application_ids(CONFIRMATIONS_COLLECTION)
+    uids = get_uids(CONFIRMATIONS_COLLECTION)
     checkin_links = {}
-    for application_id in application_ids:
-        hhid = get_applicant_hhid(application_id)
-        checkin_links[application_id] = (
+    for uid in uids:
+        hhid = get_applicant_hhid(uid)
+        checkin_links[uid] = (
             f"https://admin.hackharvard.io/user/{hhid}"
         )
 

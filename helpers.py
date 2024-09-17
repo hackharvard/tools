@@ -40,41 +40,52 @@ db = firestore.client()
 
 # ----------------------------- #
 
-def get_application_ids(collection_loc: str = APPLICATIONS_COLLECTION) -> list:
+def get_applications() -> dict:
     """
-    Get all application ids from firestore
+    Get all applications from firestore
     """
-    application_ids = []
+    applications = {}
+    applications_collection = db.collection(APPLICATIONS_COLLECTION).stream()
+    for application in applications_collection:
+        applications[application.id] = application.to_dict()
+    
+    return applications
+
+def get_uids(collection_loc: str = APPLICATIONS_COLLECTION) -> list:
+    """
+    Get all uids from firestore
+    """
+    uids = []
     applications = db.collection(collection_loc).stream()
     for application in applications:
-        application_ids.append(application.id)
+        uids.append(application.id)
     
-    return application_ids
+    return uids
 
-def get_applicant(app_id: str, collection_loc: str = USERS_COLLECTION) -> dict:
+def get_applicant(uid: str, collection_loc: str = USERS_COLLECTION) -> dict:
     """
     Get applicant details based on the application id as a dictionary
     """
-    applicant = db.collection(collection_loc).document(app_id).get()
+    applicant = db.collection(collection_loc).document(uid).get()
     return applicant.to_dict()
 
-def get_applicant_hhid(app_id: str) -> str:
+def get_applicant_hhid(uid: str) -> str:
     """
     Get the applicant hhid based on the application id
     """
-    return get_applicant(app_id)["hhid"]
+    return get_applicant(uid)["hhid"]
 
-def get_applicant_email(app_id: str) -> str:
+def get_applicant_email(uid: str) -> str:
     """
     Get the email of the applicant
     """
-    return get_applicant(app_id, APPLICATIONS_COLLECTION)["personal"]["email"]
+    return get_applicant(uid, APPLICATIONS_COLLECTION)["personal"]["email"]
 
-def get_decision(app_id: str) -> str:
+def get_decision(uid: str) -> str:
     """
     Get the decision of the applicant
     """
-    return db.collection(DECISIONS_COLLECTION).document(app_id).get().to_dict()["type"]
+    return db.collection(DECISIONS_COLLECTION).document(uid).get().to_dict()["type"]
 
 def get_decisions() -> dict:
     """
@@ -87,18 +98,31 @@ def get_decisions() -> dict:
     
     return decisions
 
+def get_accepted_applications() -> dict:
+    """
+    Get all accepted applications from firestore
+    """
+    accepted_applications = {}
+    applications = get_applications()
+    decisions = get_decisions()
+    for uid, decision in decisions.items():
+        if decision == "accepted":
+            accepted_applications[uid] = applications[uid]
+
+    return accepted_applications
+
 def get_all_applicants_emails(only_accepted: bool = False) -> list:
     """
     Get emails from applicants who have a decision made about them
     """
     print("Getting emails, this may take a while...")
     emails = []
-    for application_id, decision in get_decisions().items():
+    for uid, decision in get_decisions().items():
         # Set only_accepted to True if you only want emails of accepted applicants
         if only_accepted:
             if decision == "accepted":
-                emails.append(get_applicant_email(application_id))
+                emails.append(get_applicant_email(uid))
         else:
-            emails.append(get_applicant_email(application_id))
+            emails.append(get_applicant_email(uid))
 
     return emails
