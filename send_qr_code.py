@@ -10,7 +10,7 @@ POSTMARK_API_TOKEN = os.getenv("POSTMARK_API_TOKEN")
 
 postmark = PostmarkClient(server_token=POSTMARK_API_TOKEN)
 
-def send_postmark(name:str, email:str, qr_bytes):
+def send_postmark(name:str, email:str, qr_bytes:str):
     email_content = f"""
 
 <html>
@@ -23,7 +23,7 @@ here’s your check in link for checking to the Hackathon!
 
 """
     postmark.emails.send(
-        From ='',
+        From ='tech@hackharvard.io',
         To = email,
         Subject ='Hackathon Check-in QR Code',
         HtmlBody =email_content,
@@ -53,6 +53,6 @@ if __name__ == "__main__":
         type(img)  # qrcode.image.pil.PilImage
         img.save(f"qrcode.png")
         with open(f"qrcode.png", "rb") as f:
-            encoded = base64.b64encode(f.read())
-            send_postmark(v['name'], v['email'], encoded)
+            encoded_qr = base64.b64encode(f.read()).decode('utf-8')
+            send_postmark(v['name'], v['email'], encoded_qr)
 
