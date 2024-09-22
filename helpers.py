@@ -98,6 +98,23 @@ def get_decisions() -> dict:
     
     return decisions
 
+def get_confirmation(uid: str) -> str:
+    """
+    Get the decision of the applicant
+    """
+    return db.collection(CONFIRMATIONS_COLLECTION).document(uid).get().to_dict()["confirmed"]
+
+def get_confirmations() -> dict:
+    """
+    Get all decisions from firestore
+    """
+    confirmations = {}
+    confirmations_collection = db.collection(CONFIRMATIONS_COLLECTION).stream()
+    for confirmation in confirmations_collection:
+        confirmations[confirmation.id] = confirmation.to_dict()["confirmed"]
+    
+    return confirmations
+
 def get_accepted_applications() -> dict:
     """
     Get all accepted applications from firestore
@@ -110,6 +127,19 @@ def get_accepted_applications() -> dict:
             accepted_applications[uid] = applications[uid]
 
     return accepted_applications
+
+def get_confirmed_participants() -> dict:
+    """
+    Get all confirmed participants from firestore
+    """
+    confirmed_participants = {}
+    applications = get_applications()
+    confirmations = get_confirmations()
+    for uid, confirmation in confirmations.items():
+        if confirmation == "Yes, I can attend all 3 days of HackHarvard.":
+            confirmed_participants[uid] = applications[uid]
+
+    return confirmed_participants
 
 def get_all_applicants_emails(only_accepted: bool = False) -> list:
     """
