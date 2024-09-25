@@ -1,4 +1,4 @@
 .env
 __pycache__
-resumes.csv
-tshirts.csv
+*.csv
+*.json 

@@ -1,38 +1,39 @@
-from helpers import get_accepted_applications, get_confirmed_participants
-import csv
+from helpers import get_confirmed_applications, export_to_csv
 
 """
-Associates a uid with a firebase storage link to resume
+Associates a uid with a tshirt size
 """
 
-def generate_resume_links():
+DEFAULT_FILE_PATH = "csv/tshirts.csv"
+
+def generate_tshirt_sizes():
     """
     Generate resume links for all accepted applicants
     """
-    confirmations = get_confirmed_participants()
-    resume_links = {}
-    for application_id, application_data in confirmations.items():
-        first_name = application_data["personal"]["firstName"]
-        last_name = application_data["personal"]["lastName"]
-        size = application_data["hackathon"]["shirtSize"]
+    confirmations = get_confirmed_applications()
+    tshirts = {}
+    for uid, application_data in confirmations.items():
+        personal = application_data["personal"]
 
-        resume_links[application_id] = {
-            "name": f"{first_name} {last_name}",
-            "size": size,
+        tshirts[uid] = {
+            "name": f"{personal["firstName"]} {personal["lastName"]}",
+            "size": application_data["hackathon"]["shirtSize"],
         }
 
-    return resume_links
+    return tshirts
 
-def export_to_csv():
-    resume_links = generate_resume_links()
-    with open("tshirts.csv", "w") as f:
-        writer = csv.writer(f)
-        writer.writerow(["Name", "Shirt Size"])
-        for _, application_data in resume_links.items():
-            writer.writerow([
-                application_data["name"],
-                application_data["size"],
-            ])
+def export_tshirts(file_path=DEFAULT_FILE_PATH):
+    tshirts = generate_tshirt_sizes()
+    # Define the column names for the csv
+    columns = ["name", "size"]
+
+    # Convert dict to a list of dictionaries
+    csv_data = [
+        {"name": data["name"], "size": data["size"]}
+        for data in tshirts.values()
+    ]
+
+    export_to_csv(csv_data, file_path, columns)
 
 if __name__ == "__main__":
-    export_to_csv()
+    export_tshirts()

@@ -1,8 +1,10 @@
-from helpers import get_uids, get_applicant_hhid, get_accepted_applications
-import json;
+from helpers import get_accepted_applications, export_to_json
+
 """
 Associates a uid with a link to check-in
 """
+
+DEFAULT_FILE_PATH = "json/checkin_links.json"
 
 def generate_checkin_links():
     """
@@ -10,23 +12,22 @@ def generate_checkin_links():
     """
     applications = get_accepted_applications()
     checkin_links = {}
-    for application_id, application_data in applications.items():
-        first_name = application_data["personal"]["firstName"]
-        last_name = application_data["personal"]["lastName"]
-        uid = application_id
+    for uid, application_data in applications.items():
+        personal = application_data["personal"]
         hhid = application_data["meta"]["hhid"]
-        email = application_data["personal"]["email"]
         checkin_links[uid] = {
-            "name": f"{first_name} {last_name}",
+            "name": f"{personal["firstName"]} {personal["lastName"]}",
             "hhid": hhid,
-            "email": email,
+            "email": personal["email"],
             "url": f"https://admin.hackharvard.io/user/{hhid}"
         }
             
     return checkin_links
 
-if __name__ == "__main__":
+def export_checkin_links(file_path=DEFAULT_FILE_PATH):
     checkin_links = generate_checkin_links()
-    # print(checkin_links)
-    with open('./check_in_links.json', 'w') as f:
-        json.dump(checkin_links, f)
+    export_to_json(checkin_links, file_path)
+
+if __name__ == "__main__":
+    export_checkin_links()
+    

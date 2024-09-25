@@ -1,9 +1,10 @@
-from helpers import get_accepted_applications
-import csv
+from helpers import get_accepted_applications, export_to_csv
 
 """
 Associates a uid with a firebase storage link to resume
 """
+
+DEFAULT_FILE_PATH = "csv/resumes.csv"
 
 def generate_resume_links():
     """
@@ -29,19 +30,16 @@ def generate_resume_links():
 
     return resume_links
 
-def export_to_csv():
+def export_resume_links(file_path=DEFAULT_FILE_PATH):
     resume_links = generate_resume_links()
-    with open("resumes.csv", "w") as f:
-        writer = csv.writer(f)
-        writer.writerow(["Name", "School", "Graduation Year", "Major", "Resume URL"])
-        for _, application_data in resume_links.items():
-            writer.writerow([
-                application_data["name"],
-                application_data["school"],
-                application_data["graduation_year"],
-                application_data["major"],
-                application_data["resume_url"]
-            ])
+    columns = ["name", "school", "graduation_year", "major", "resume_url"]
+    csv_data = [
+        {"name": data["name"], "school": data["school"], 
+         "graduation_year": data["graduation_year"], "major": data["major"], 
+         "resume_url": data["resume_url"]}
+        for data in resume_links.values()
+    ]
+    export_to_csv(csv_data, file_path, columns)
 
 if __name__ == "__main__":
-    export_to_csv()
+    export_resume_links()

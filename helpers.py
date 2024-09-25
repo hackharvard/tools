@@ -1,5 +1,7 @@
 import os
 import firebase_admin
+import json
+import pandas as pd
 from dotenv import load_dotenv
 from firebase_admin import credentials, firestore
 
@@ -38,7 +40,7 @@ firebase_admin.initialize_app(cred)
 # Get firestore client
 db = firestore.client()
 
-# ----------------------------- #
+# --------------GET USER DATA--------------- #
 
 def get_applications() -> dict:
     """
@@ -128,7 +130,7 @@ def get_accepted_applications() -> dict:
 
     return accepted_applications
 
-def get_confirmed_participants() -> dict:
+def get_confirmed_applications() -> dict:
     """
     Get all confirmed participants from firestore
     """
@@ -156,3 +158,31 @@ def get_all_applicants_emails(only_accepted: bool = False) -> list:
             emails.append(get_applicant_email(uid))
 
     return emails
+
+# --------------EXPORT--------------- #
+
+def export_to_csv(data, file_path, columns) -> None:
+    """
+    Export data to a csv file given some column headers and data
+    """
+    try:
+        if isinstance(data, dict):
+            df = pd.DataFrame.from_dict(data, orient='index')
+        
+        df = pd.DataFrame(data)
+
+        df.to_csv(file_path, columns=columns, index=False)
+        print("Data exported to", file_path)
+    except Exception as e:
+        print("Error exporting data to csv:", e)
+
+def export_to_json(data, file_path) -> None:
+    """
+    Export data to a json file
+    """
+    try:
+        with open(file_path, 'w') as f:
+            json.dump(data, f)
+        print("Data exported to", file_path)
+    except Exception as e:
+        print("Error exporting data to json:", e)
