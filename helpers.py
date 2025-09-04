@@ -6,10 +6,10 @@ from dotenv import load_dotenv
 from firebase_admin import credentials, firestore
 
 # Change this to current collections in firestore
-APPLICATIONS_COLLECTION = "2024-applications" # has most info, including email
-CONFIRMATIONS_COLLECTION = "2024-confirmations" 
-DECISIONS_COLLECTION = "2024-decisions" 
-USERS_COLLECTION = "2024-users" # has minimal info, but has hhid as well
+APPLICATIONS_COLLECTION = "2025-applications" # has most info, including email
+CONFIRMATIONS_COLLECTION = "2025-confirmations" 
+DECISIONS_COLLECTION = "2025-decisions" 
+USERS_COLLECTION = "2025-users" # has minimal info, but has hhid as well
 
 # Load environment variables
 load_dotenv()
