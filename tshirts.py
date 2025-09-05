@@ -16,7 +16,7 @@ def generate_tshirt_sizes():
         personal = application_data["personal"]
 
         tshirts[uid] = {
-            "name": f"{personal["firstName"]} {personal["lastName"]}",
+            "name": f"{personal['firstName']} {personal['lastName']}",
             "size": application_data["hackathon"]["shirtSize"],
         }
 
