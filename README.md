@@ -25,6 +25,10 @@ If you wish to send a custom email out, follow these instructions:
 7. Have any other modifications to make? Check out the `emails/base.json` file.
 8. Want to make a new template? Add it to `email_templates.py`. For consistency's sake, have a `title` field/argument and a `description` field/argument.
 
+Here's an example email I made:
+<img width="556" height="815" alt="image" src="https://github.com/user-attachments/assets/8c6caeae-efb9-494f-a650-325b50fba067" />
+
+
 # Updating
 
 If updating this for the new year, check the Firebase website. Log in -> hackharvard-core -> on the left, click the "Build" dropdown -> Firestore database. Then, check the helpers.py header and edit the names of the collections to the appropriate year.
