@@ -170,7 +170,7 @@ if __name__ == "__main__":
         print('Loading database data...')
         recipients = get_recipients(args)
 
-        #! For backwards compatibility only, new metadata should use the CSV path above
+        # For backwards compatibility only, new metadata should use the CSV path above
         for to_email, first_name in recipients:
             desc = desc_template
             if args.first_name:
