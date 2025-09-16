@@ -29,6 +29,25 @@ Here's an example email I made:
 
 <img width="556" height="815" alt="image" src="https://github.com/user-attachments/assets/8c6caeae-efb9-494f-a650-325b50fba067" />
 
+## Custom Metadata using CSV
+
+You can use personalized data from a CSV instead of the database. This is useful when you need to send to an arbitrary list or include per-recipient information or values.
+
+Flags involved:
+- `--csv_input <CSV>` — load recipients and metadata from a CSV file path
+- `--first-name` — enable first-name replacement in `description` (replaces `{{first_name}}` with the first name of the recipient).
+        *Note that the csv metadata parser uses str.format (i.e., "{row_name}" instead of "{{row_name}}") and is different in format from the first_name replacement logic.
+
+Example of how personalization works in CSV mode:
+- The script replaces `{{first_name}}` in `description` with the `first_name` value or `there` if missing (when `--first-name` is provided).
+- It then formats the `description` with all CSV fields using `desc.format(**meta_data)`, so placeholders like `{reimburse_amt}` will be replaced.
+- The CSV must include an `email` column. This is enforced and the script will error if missing.
+- All `{placeholder}` tokens present in your template `description` must exist as columns in the CSV. If any are missing, the script will stop and list the missing columns.
+- If your CSV contains extra columns that are not referenced by the template (excluding `email` and `first_name`), the script will show a one-time warning listing the unused columns and prompt: "Are you sure you want to continue? (y/n)".
+ **It is important to name the CSV columns exactly as the placeholders in the description.**
+
+
+
 
 # Updating
 
