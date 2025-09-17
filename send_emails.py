@@ -1,6 +1,7 @@
 import os
 import argparse
 import sys
+import jinja2
 
 # add project root to path (one level up from this file)
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -19,13 +20,13 @@ def get_recipients(args) -> list:
         recipients.append((args.to, {"first_name": "there"}))
     elif args.to_list:
         recipients.extend(((email, {"first_name": "there"}) for email in args.to_list))
+    elif args.to_csv:
+        recipients = emails.sender.read_csv(args.to_csv)
     elif args.to_collection:
         if args.to_collection == "accepted":
             application_func = get_accepted_applications
         elif args.to_collection == "confirmed":
             application_func = get_confirmed_applications
-        elif args.to_csv:
-            recipients = emails.sender.read_csv(args.to_csv)
         else:  # all
             if input("Are you sure you want to send to all applicants? (y/n) ").lower() != "y":
                 print("Aborting.")
@@ -114,7 +115,14 @@ if __name__ == "__main__":
         context.update(recipient or {})
 
         # Render the build args using Jinja2 templating
-        rendered   = emails.renderer.render_fields(build_args, context)
+        try:
+            rendered = emails.renderer.render_fields(build_args, context)
+        except jinja2.exceptions.UndefinedError as e:
+            print(e)
+            print("Possible causes:")
+            print("- Missing row/column in CSV file/application data.")
+            print("- Typo in the template (e.g. {{first_name}} vs {{firstname}}).")
+            print("- Not using --to-csv if you want to use CSV fields.")
         subject    = rendered.pop("subject", "No Subject")
         from_email = rendered.pop("from_email", "team@hackharvard.io")
 
