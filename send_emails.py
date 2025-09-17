@@ -90,14 +90,6 @@ if __name__ == "__main__":
     )
 
     parser.add_argument(
-        "--first-name",
-        action="store_true",
-        help="Personalize the email by including the recipient's first name "
-        "(if available). Any instances of {{first_name}} in the description " \
-        "field of the build args JSON will be replaced with the first name " \
-        "of the recipient, or 'there' (e.g. 'Hello, there')."
-    )
-    parser.add_argument(
         "--silent",
         action="store_true",
         help="Suppress console output except for errors."
