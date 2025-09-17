@@ -1,4 +1,4 @@
-Run ```pip install firebase-admin python-dotenv qrcode postmark pandas``` first.
+Run ```pip install firebase-admin python-dotenv qrcode postmark pandas jinja2``` first.
 
 # Example uses
 

@@ -1,5 +1,6 @@
 import os
 import json
+import csv
 import sys
 
 from dotenv import load_dotenv
@@ -44,3 +45,37 @@ def read_json(path: str) -> dict:
     with open(path, "r", encoding="utf-8") as f:
         return json.load(f)
 
+def _detect_email_column(col_names: list[str]) -> str | None:
+    aliases = {"email", "emails", "e-mails"}
+    for col in col_names:
+        if col.strip() in aliases:
+            return col
+    return None
+
+def read_csv(path: str) -> list[tuple[str, dict]]:
+    with open(path, "r", encoding="utf-8") as f:
+        rdr = csv.DictReader(f)
+        rows = list(rdr)
+
+    if not rows:
+        raise ValueError("CSV file is empty or has no data rows.")
+    
+    col_names = rows[0].keys()
+    email_col = _detect_email_column(col_names)
+    if not email_col:
+        raise ValueError("No email column found in CSV file. "
+                         "Use one of: email, emails, e-mails (ignoring case).")
+    
+    recipients = []
+    for i, row in enumerate(rows, start=2): # start=2 to account for header row
+        email = row.get(email_col, "").strip()
+        if not email:
+            raise SystemExit(f"Row {i} is missing an email address in column '{email_col}'.")
+        
+        context = {}
+        for key, val in row.items():
+            context[key.strip()] = val.strip() if isinstance(val, str) else val
+        recipients.append((email, context))
+
+    return recipients
+    
