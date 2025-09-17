@@ -39,6 +39,12 @@ def get_recipients(args) -> list:
             first_name = personal.get("firstName")
             recipients.append((email, {"first_name": first_name or "there"}))
 
+    n = len(recipients)
+    if n > 3:
+        if input(f"You are about to send out {n} emails. No going back from that. Continue? (y/n) ").lower() != "y":
+            print("Aborting.")
+            sys.exit(0)
+
     return recipients
 
 if __name__ == "__main__":
