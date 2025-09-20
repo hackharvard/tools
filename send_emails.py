@@ -1,6 +1,7 @@
 import os
 import argparse
 import sys
+import jinja2
 
 # add project root to path (one level up from this file)
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -11,12 +12,16 @@ load_dotenv()
 from helpers import get_accepted_applications, get_confirmed_applications, get_applications
 import emails
 
+
+
 def get_recipients(args) -> list:
     recipients = []
     if args.to:
-        recipients.append((args.to, "there"))
+        recipients.append((args.to, {"first_name": "there"}))
     elif args.to_list:
-        recipients.extend(((email, "there") for email in args.to_list))
+        recipients.extend(((email, {"first_name": "there"}) for email in args.to_list))
+    elif args.to_csv:
+        recipients = emails.sender.read_csv(args.to_csv)
     elif args.to_collection:
         if args.to_collection == "accepted":
             application_func = get_accepted_applications
@@ -32,7 +37,13 @@ def get_recipients(args) -> list:
             personal   = application_data.get("personal", {})
             email      = personal.get("email")
             first_name = personal.get("firstName")
-            recipients.append((email, first_name))
+            recipients.append((email, {"first_name": first_name or "there"}))
+
+    n = len(recipients)
+    if n > 3:
+        if input(f"You are about to send out {n} emails. No going back from that. Continue? (y/n) ").lower() != "y":
+            print("Aborting.")
+            sys.exit(0)
 
     return recipients
 
@@ -59,6 +70,17 @@ if __name__ == "__main__":
         choices=["accepted", "confirmed", "all"],
         help="Send to a specific cohort of applicants from the collection defined in helpers.py."
     )
+    grp.add_argument(
+        "--to-csv", "--link-csv",
+        metavar="CSV",
+        help="""
+        Loads recipient emails from a CSV file.
+        Sends emails to all addresses in the `email`, `emails`, or `e-mails` column,
+        whichever is first. If none of those columns exist, the program exits.
+        Using {{col_name}} in the description field will look for a column named
+        `col_name` and replace it with the corresponding value for each recipient.
+        """
+    )
 
     parser.add_argument(
         "-i", "--input",
@@ -75,14 +97,6 @@ if __name__ == "__main__":
     )
 
     parser.add_argument(
-        "--first-name",
-        action="store_true",
-        help="Personalize the email by including the recipient's first name "
-        "(if available). Any instances of {{first_name}} in the description " \
-        "field of the build args JSON will be replaced with the first name " \
-        "of the recipient, or 'there' (e.g. 'Hello, there')."
-    )
-    parser.add_argument(
         "--silent",
         action="store_true",
         help="Suppress console output except for errors."
@@ -95,26 +109,33 @@ if __name__ == "__main__":
     
     args = parser.parse_args()
 
-    recipients = get_recipients(args)
+    recipients     = get_recipients(args)
     email_template = emails.templates.get_template(args.template)
-    build_args_template = emails.sender.read_json(args.input)
+    build_args     = emails.sender.read_json(args.input)
 
-    subject = build_args_template.pop("subject", "No Subject")
-    from_email = build_args_template.pop("from_email", "team@hackharvard.io")
+    DEFAULT_CONTEXT = {"first_name": "there"}
+    for to_email, recipient in recipients:
+        context = DEFAULT_CONTEXT.copy()
 
-    desc_template = build_args_template.get("description", "")
+        # Merge context from the recipient with some base default context
+        context.update(recipient or {})
 
-    for to_email, first_name in recipients:
-        desc = desc_template
-        if args.first_name:
-            desc = desc.replace("{{first_name}}", first_name or "there")
-
-        # per-recipient copy
-        build_args = {**build_args_template, "description": desc}
+        # Render the build args using Jinja2 templating
+        try:
+            rendered = emails.renderer.render_fields(build_args, context)
+        except jinja2.exceptions.UndefinedError as e:
+            print(e)
+            print("Possible causes:")
+            print("- Missing row/column in CSV file/application data.")
+            print("- Typo in the template (e.g. {{first_name}} vs {{firstname}}).")
+            print("- Not using --to-csv if you want to use CSV fields.")
+            sys.exit(1)
+        subject    = rendered.pop("subject", "No Subject")
+        from_email = rendered.pop("from_email", "team@hackharvard.io")
 
         emails.sender.send_email(
             email_template=email_template,
-            build_args=build_args,
+            build_args=rendered,
             from_email=from_email,
             to_email=to_email,
             subject=subject,
