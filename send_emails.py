@@ -129,6 +129,7 @@ if __name__ == "__main__":
             print("- Missing row/column in CSV file/application data.")
             print("- Typo in the template (e.g. {{first_name}} vs {{firstname}}).")
             print("- Not using --to-csv if you want to use CSV fields.")
+            sys.exit(1)
         subject    = rendered.pop("subject", "No Subject")
         from_email = rendered.pop("from_email", "team@hackharvard.io")
 
