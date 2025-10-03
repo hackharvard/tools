@@ -140,7 +140,7 @@ def get_confirmed_applications() -> dict:
     for uid, confirmation in confirmations.items():
         if confirmation == "Yes, I can attend all 3 days of HackHarvard.":
             confirmed_participants[uid] = applications[uid]
-
+    print('[DEBUG/helpers.py]: # of confirmed_participants: ', len(confirmed_participants))
     return confirmed_participants
 
 def get_all_applicants_emails(only_accepted: bool = False) -> list:
