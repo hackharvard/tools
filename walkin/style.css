@@ -1,0 +1,247 @@
+/* HackHarvard Walk-In Confirmation - Modern UI */
+:root {
+  --bg: #0b1220;
+  --bg-soft: #0f1629;
+  --card: #111a30;
+  --card-2: #0e172b;
+  --text: #e6eefc;
+  --text-muted: #a9b4ce;
+  --primary: #6ea8ff;
+  --primary-600: #4f8dff;
+  --success: #42d392;
+  --success-600: #2fb37a;
+  --danger: #ff6b6b;
+  --ring: rgba(110, 168, 255, 0.55);
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, 'Helvetica Neue', Arial, 'Noto Sans', 'Apple Color Emoji', 'Segoe UI Emoji';
+  color: var(--text);
+  background: radial-gradient(1200px 600px at 10% 0%, #16203b 0%, #0b1220 40%),
+              radial-gradient(600px 800px at 100% 0%, #1b2650 0%, #0b1220 60%),
+              var(--bg);
+}
+
+.container {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 32px 20px 60px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.logo {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  box-shadow: 0 6px 20px rgba(110, 168, 255, 0.45);
+}
+
+h1 {
+  font-size: 1.6rem;
+  margin: 0;
+  letter-spacing: 0.2px;
+}
+
+.subtitle {
+  margin: 6px 0 0 48px;
+  color: var(--text-muted);
+}
+
+.card {
+  background: linear-gradient(180deg, var(--card) 0%, var(--card-2) 100%);
+  border: 1px solid rgba(110, 168, 255, 0.15);
+  border-radius: 16px;
+  padding: 20px 18px;
+  margin: 18px 0;
+  box-shadow: var(--shadow);
+}
+
+.section-title {
+  margin: 0 0 12px 0;
+  font-size: 1.05rem;
+}
+
+.muted {
+  color: var(--text-muted);
+  margin-top: 6px;
+}
+
+.hint {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  margin: 10px 0 0 0;
+}
+
+.checkbox {
+  display: grid;
+  grid-template-columns: 22px 1fr;
+  gap: 12px;
+  align-items: start;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  padding: 12px 12px;
+  margin-top: 12px;
+}
+
+.checkbox input[type="checkbox"] {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-radius: 6px;
+  background: transparent;
+  display: grid;
+  place-content: center;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.checkbox input[type="checkbox"]:hover {
+  border-color: var(--primary);
+}
+
+.checkbox input[type="checkbox"]:checked {
+  background: linear-gradient(135deg, var(--primary), var(--primary-600));
+  border-color: transparent;
+  box-shadow: 0 0 0 3px var(--ring);
+}
+
+.checkbox input[type="checkbox"]:checked::after {
+  content: '';
+  width: 9px;
+  height: 9px;
+  transform: rotate(45deg);
+  border-right: 2.5px solid white;
+  border-bottom: 2.5px solid white;
+}
+
+.checkbox input[type="checkbox"][disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.checkbox label {
+  line-height: 1.45;
+}
+
+.waiver-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 10px 0 6px;
+}
+
+.btn {
+  -webkit-tap-highlight-color: transparent;
+  background: #1a2647;
+  color: var(--text);
+  border: 1px solid rgba(110, 168, 255, 0.35);
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  cursor: pointer;
+  transition: transform 0.06s ease, box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(110, 168, 255, 0.25);
+  border-color: rgba(110, 168, 255, 0.7);
+}
+
+.btn:active { transform: translateY(0); }
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary), var(--primary-600));
+  border-color: transparent;
+}
+
+.btn-success {
+  background: linear-gradient(135deg, var(--success), var(--success-600));
+  border-color: transparent;
+}
+
+.btn[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+  box-shadow: none !important;
+}
+
+.link {
+  color: var(--primary);
+  text-decoration: none;
+}
+.link:hover { text-decoration: underline; }
+
+.actions { margin-top: 8px; }
+
+.error {
+  color: var(--danger);
+  margin-top: 8px;
+}
+
+.footer {
+  margin-top: 16px;
+  text-align: center;
+}
+
+/* Confirmation screen */
+.confirmation {
+  margin-top: 28px;
+  background: linear-gradient(180deg, var(--card) 0%, var(--card-2) 100%);
+  border: 1px solid rgba(110, 168, 255, 0.15);
+  border-radius: 16px;
+  padding: 24px 18px;
+  box-shadow: var(--shadow);
+}
+
+.receipt {
+  margin-top: 10px;
+  background: rgba(66, 211, 146, 0.07);
+  border: 1px dashed rgba(66, 211, 146, 0.5);
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+
+/* Tiny confetti dots */
+.confetti::before, .confetti::after {
+  content: '';
+  position: absolute;
+  width: 6px; height: 6px;
+  background: radial-gradient(circle at 50% 50%, #ffd166, #e76f51);
+  border-radius: 50%;
+  animation: float 4s ease-in-out infinite;
+}
+.confetti::after {
+  left: 16px; top: -8px;
+  background: radial-gradient(circle at 50% 50%, #06d6a0, #118ab2);
+  animation-delay: 1s;
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); opacity: 0.6; }
+  50% { transform: translateY(-10px); opacity: 1; }
+}
+
+/* Responsive */
+@media (max-width: 560px) {
+  .checkbox { grid-template-columns: 22px 1fr; }
+  .subtitle { margin-left: 0; }
+  .header { flex-direction: column; align-items: flex-start; gap: 8px; }
+}

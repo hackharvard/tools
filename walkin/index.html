@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HackHarvard Walk-In Confirmation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <main class="container">
+    <header class="header">
+      <img src="https://hackharvard.io/favicon-32x32.png" alt="HackHarvard" class="logo" />
+      <h1>HackHarvard Walk-In Confirmation</h1>
+      <p class="subtitle">Please read and confirm the following to complete your walk-in check-in.</p>
+    </header>
+
+    <section class="card">
+      <h2 class="section-title">Waiver</h2>
+      <p class="muted">You must open and read the PDF waiver before you can accept it.</p>
+      <div class="waiver-actions">
+        <button id="openWaiverBtn" type="button" class="btn btn-primary">Open Waiver PDF</button>
+        <a id="waiverDownloadLink" class="link" href="./walkin_waiver.pdf" target="_blank" rel="noopener noreferrer" hidden>Download Waiver</a>
+      </div>
+      <div class="checkbox">
+        <input type="checkbox" id="acceptWaiver" disabled />
+        <label for="acceptWaiver">I have opened, read, and accept the terms of the HackHarvard waiver (PDF).</label>
+      </div>
+      <p id="waiverHint" class="hint">Tip: The acceptance checkbox will enable after you open the PDF.</p>
+    </section>
+
+    <section class="card">
+      <h2 class="section-title">Agreements</h2>
+      <div class="checkbox">
+        <input type="checkbox" id="mediaRelease" />
+        <label for="mediaRelease">
+          I grant permission for my photograph, video, or likeness to be captured at HackHarvard and used by HackHarvard for event-related promotional and marketing purposes, including online and offline materials. I understand that I won’t receive compensation for this use, and my participation is voluntary. I agree to these terms by checking this box.
+        </label>
+      </div>
+
+      <div class="checkbox">
+        <input type="checkbox" id="finalDecision" />
+        <label for="finalDecision">
+          I understand submitting confirms my decision to attend HackHarvard and that I can no longer make further changes.
+        </label>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2 class="section-title">Confirm</h2>
+      <form id="confirmForm" novalidate>
+        <div class="actions">
+          <button id="submitBtn" type="submit" class="btn btn-success" disabled>Submit Confirmation</button>
+        </div>
+        <p id="errorText" class="error" role="alert" aria-live="polite" hidden>
+          Please complete all required steps before submitting.
+        </p>
+      </form>
+    </section>
+
+    <footer class="footer">
+      <p class="muted">Need help? Ask a volunteer at the registration desk.</p>
+    </footer>
+
+    <section id="confirmationScreen" class="confirmation" hidden>
+      <div class="confetti" aria-hidden="true"></div>
+      <h2>You're all set! 🎉</h2>
+      <p>Thank you for confirming your attendance at HackHarvard. Please show this screen to a volunteer if requested.</p>
+      <div class="receipt">
+        <p><strong>Timestamp:</strong> <span id="confirmTimestamp"></span></p>
+        <p><strong>Status:</strong> Confirmed</p>
+      </div>
+      <button id="backBtn" class="btn">Back</button>
+    </section>
+  </main>
+
+  <script src="./main.js"></script>
+</body>
+</html>
