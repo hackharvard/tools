@@ -159,6 +159,21 @@ def get_all_applicants_emails(only_accepted: bool = False) -> list:
 
     return emails
 
+# -----------GET FUNCTIONS----------- #
+
+def get_collection_func(collection: str):
+    """
+    Get the appropriate function to get the collection
+    """
+    if collection == "all":
+        return get_applications
+    elif collection == "accepted":
+        return get_accepted_applications
+    elif collection == "confirmed":
+        return get_confirmed_applications
+    else:
+        raise ValueError("Invalid collection name")
+
 # --------------EXPORT--------------- #
 
 def export_to_csv(data, file_path, columns) -> None:
