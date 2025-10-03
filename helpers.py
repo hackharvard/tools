@@ -47,8 +47,8 @@ def get_uid_by_hhid(hhid: str, collection_loc: str = USERS_COLLECTION) -> str:
     Get the document id (uid) based on the hhid
     """
     users = db.collection(collection_loc).where("hhid", "==", hhid).stream()
-    if len(users) > 2:
-        raise Exception("Multiple users with same hhid found")
+    if not list(users):
+        return None
     return list(users)[0].id
  
 def get_applications() -> dict:
@@ -149,7 +149,7 @@ def get_confirmed_applications() -> dict:
     for uid, confirmation in confirmations.items():
         if confirmation == "Yes, I can attend all 3 days of HackHarvard.":
             confirmed_participants[uid] = applications[uid]
-    print('[DEBUG/helpers.py]: # of confirmed_participants: ', len(confirmed_participants))
+
     return confirmed_participants
 
 def get_all_applicants_emails(only_accepted: bool = False) -> list:
