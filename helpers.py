@@ -42,6 +42,15 @@ db = firestore.client()
 
 # --------------GET USER DATA--------------- #
 
+def get_uid_by_hhid(hhid: str, collection_loc: str = USERS_COLLECTION) -> str:
+    """
+    Get the document id (uid) based on the hhid
+    """
+    users = db.collection(collection_loc).where("hhid", "==", hhid).stream()
+    if len(users) > 2:
+        raise Exception("Multiple users with same hhid found")
+    return list(users)[0].id
+ 
 def get_applications() -> dict:
     """
     Get all applications from firestore
@@ -158,6 +167,29 @@ def get_all_applicants_emails(only_accepted: bool = False) -> list:
             emails.append(get_applicant_email(uid))
 
     return emails
+
+# -----------SET USER DATA----------- #
+
+def set_confirmation(
+        uid, 
+        confirmed="Yes, I can attend all 3 days of HackHarvard.",
+        photo_release=True,
+        submitting=True,
+        travel_plans="Yes, I have finalized travel plans.",
+        waiver=True
+    ):
+    """
+    Set the confirmation of the applicant.
+    """
+    confirmation_data = {
+        "confirmed": confirmed,
+        "photoRelease": photo_release,
+        "submitting": submitting,
+        "travelPlans": travel_plans,
+        "waiver": waiver
+    }
+
+    db.collection(CONFIRMATIONS_COLLECTION).document(uid).set(confirmation_data, merge=True)
 
 # --------------EXPORT--------------- #
 
