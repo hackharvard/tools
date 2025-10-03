@@ -47,9 +47,13 @@ def get_uid_by_hhid(hhid: str, collection_loc: str = USERS_COLLECTION) -> str:
     Get the document id (uid) based on the hhid
     """
     users = db.collection(collection_loc).where("hhid", "==", hhid).stream()
-    if not list(users):
+    users = list(users)  # materialize only once
+
+    if not users:
         return None
-    return list(users)[0].id
+
+    print(users)  # safe, won't be empty unless truly no docs
+    return users[0].id
  
 def get_applications() -> dict:
     """
