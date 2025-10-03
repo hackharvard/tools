@@ -19,6 +19,9 @@ def main():
 
     uid = get_uid_by_hhid(hhid)
 
+    if not uid:
+        raise ValueError(f"No applicant found with HHID: {hhid}")
+
     print(f"Confirming applicant with HHID: {hhid}, UID: {uid}")
     print(f"Opening confirmation HTML page...")
 
